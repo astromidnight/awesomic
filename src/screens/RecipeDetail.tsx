@@ -93,7 +93,7 @@ export function RecipeDetail() {
       </div>
 
       {/* content card overlapping the hero */}
-      <div className="no-scrollbar -mt-6 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto rounded-t-3xl bg-surface px-5 pt-5 pb-4">
+      <div className="no-scrollbar -mt-6 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto rounded-t-3xl bg-surface px-5 pt-8 pb-4">
         <h1 className="text-[23px] font-bold text-ink-900">{recipe.title}</h1>
         <p className="flex items-center gap-2 text-[12.5px]">
           <span className="text-[13px] text-star">★</span>
