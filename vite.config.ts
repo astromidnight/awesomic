@@ -7,7 +7,11 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 // `npm run dev:phone` serves HTTPS on the LAN so the mic works on a real phone
 const phone = process.env.PHONE === '1'
 
+// GitHub Pages serves the app from /awesomic/ (set by the deploy workflow)
+const base = process.env.GHPAGES === '1' ? '/awesomic/' : '/'
+
 export default defineConfig({
+  base,
   server: phone ? { host: true } : undefined,
   preview: phone ? { host: true } : undefined,
   plugins: [
@@ -24,7 +28,8 @@ export default defineConfig({
         background_color: '#F7F8FA',
         display: 'standalone',
         orientation: 'portrait',
-        start_url: '/',
+        start_url: base,
+        scope: base,
         icons: [
           { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
