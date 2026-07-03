@@ -12,7 +12,7 @@ export function TagChip({ label, selected = false, onClick }: TagChipProps) {
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={`relative shrink-0 rounded-full px-[14px] py-[9px] text-[13px] font-medium transition-colors after:absolute after:-inset-y-2 after:inset-x-0 after:content-[''] ${
+      className={`relative inline-flex h-[34px] shrink-0 items-center justify-center rounded-full px-[14px] text-[13px] font-medium whitespace-nowrap transition-colors after:absolute after:-inset-y-2 after:inset-x-0 after:content-[''] ${
         selected
           ? 'bg-emerald-500 text-ink-0'
           : 'border border-ink-200 bg-ink-0 text-ink-900 active:bg-ink-50'

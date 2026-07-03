@@ -54,7 +54,7 @@ export function Home() {
 
         <SearchBar onClick={() => openSearch()} />
 
-        <div className="no-scrollbar -mx-5 flex gap-[9px] overflow-x-auto px-5" role="list">
+        <div className="no-scrollbar -mx-5 -my-1 flex shrink-0 gap-[9px] overflow-x-auto px-5 py-1" role="list">
           {quickTags.map((tag) => (
             <TagChip
               key={tag}
@@ -66,10 +66,12 @@ export function Home() {
         </div>
 
         <SectionHeader title="Cook with what you have" onSeeAll={() => openSearch()} />
-        <div className="no-scrollbar -mx-5 -my-2 flex gap-[14px] overflow-x-auto px-5 py-2">
+        {/* shrink-0: this row must keep its full height — the parent column is
+            scrollable, so it should scroll rather than compress the cards */}
+        <div className="no-scrollbar -mx-5 -my-2 flex shrink-0 gap-[14px] overflow-x-auto px-5 py-2">
           {loading
             ? Array.from({ length: 3 }, (_, i) => (
-                <Skeleton key={i} className="h-[195px] w-[210px] shrink-0 rounded-[18px]" />
+                <Skeleton key={i} className="h-[201px] w-[210px] shrink-0 rounded-[18px]" />
               ))
             : carousel.map((r) => (
                 <RecipeCard

@@ -83,7 +83,7 @@ export function SearchResults() {
         </div>
 
         {pills.length > 0 && (
-          <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5">
+          <div className="no-scrollbar -mx-5 -my-1 flex shrink-0 gap-2 overflow-x-auto px-5 py-1">
             {pills.map((label) => (
               <FilterPill key={label} label={label} onRemove={() => filters.removeFilter(label)} />
             ))}
