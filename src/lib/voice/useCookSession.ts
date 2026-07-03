@@ -173,11 +173,13 @@ export function useCookSession(recipe: Recipe | undefined, onComplete: () => voi
     })
     voiceRef.current = voice
 
-    void voice
-      .speak(
-        `Welcome to Sous-Chef mode for ${recipe.title}. I'm listening the whole time — you never need to touch the screen. Step 1 of ${recipe.steps.length}. ${recipe.steps[0].text}`,
-      )
-      .then(() => voice.startListening())
+    // Start the live mic meter immediately (prompts for permission up front and
+    // animates the waveform during the welcome). Recognition is suppressed while
+    // speaking and auto-resumes when the welcome utterance's onend fires, so no
+    // second startListening() is needed here.
+    void voice.speak(
+      `Welcome to Sous-Chef mode for ${recipe.title}. I'm listening the whole time — you never need to touch the screen. Step 1 of ${recipe.steps.length}. ${recipe.steps[0].text}`,
+    )
     void voice.startListening()
 
     // demo/debug hook: feed a phrase through the exact same path as the mic

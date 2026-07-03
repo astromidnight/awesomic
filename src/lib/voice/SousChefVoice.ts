@@ -34,6 +34,7 @@ export class SousChefVoice {
   private disposed = false
   private shouldListen = false
   private speaking = false
+  private currentUtterance: SpeechSynthesisUtterance | null = null
   private voice: SpeechSynthesisVoice | null = null
   private audioCtx: AudioContext | null = null
   private analyser: AnalyserNode | null = null
@@ -53,13 +54,46 @@ export class SousChefVoice {
     }
   }
 
+  // macOS ships a pile of joke/robotic voices ("Zarvox", "Bells", "Bad News"…).
+  // The old fallback (first en localService voice) could land on one of these,
+  // and it always locked onto "Samantha" — the very voice that sounds robotic.
+  private static NOVELTY =
+    /albert|bad news|bahh|bells|boing|bubbles|cellos|fred|good news|jester|junior|organ|ralph|superstar|trinoids|whisper|wobble|zarvox|grandma|grandpa|deranged|hysterical|kathy/i
+
+  /** Higher = warmer / more human. Non-English and novelty voices are excluded. */
+  private voiceScore(v: SpeechSynthesisVoice): number {
+    if (!v.lang.startsWith('en') || SousChefVoice.NOVELTY.test(v.name)) return -Infinity
+    const n = v.name.toLowerCase()
+    let score = 0
+    // 1. Cloud neural engines are the most natural (Google / Microsoft "Natural").
+    if (/natural|neural/.test(n)) score += 100
+    if (/google/.test(n)) score += 60
+    if (/online/.test(n)) score += 40
+    // 2. Apple's downloadable Premium/Enhanced + modern personas beat the compact
+    //    "Samantha"-era voices.
+    if (/premium|enhanced/.test(n)) score += 50
+    if (/\b(ava|zoe|allison|susan|nicky|aaron|evan|noelle|nathan|flo|sandy|reed|shelley|rocko)\b/.test(n))
+      score += 30
+    if (/samantha/.test(n)) score += 20
+    // 3. US English matches the app's copy and welcoming tone.
+    if (v.lang === 'en-US') score += 10
+    else if (v.lang.startsWith('en')) score += 4
+    return score
+  }
+
   private pickVoice() {
     const voices = window.speechSynthesis.getVoices()
-    this.voice =
-      voices.find((v) => v.lang.startsWith('en') && /Samantha|Google US English/i.test(v.name)) ??
-      voices.find((v) => v.lang.startsWith('en') && v.localService) ??
-      voices.find((v) => v.lang.startsWith('en')) ??
-      null
+    if (!voices.length) return
+    let best: SpeechSynthesisVoice | null = null
+    let bestScore = -Infinity
+    for (const v of voices) {
+      const s = this.voiceScore(v)
+      if (s > bestScore) {
+        bestScore = s
+        best = v
+      }
+    }
+    if (best) this.voice = best
   }
 
   /** Allow the cook to change the narration voice. */
@@ -69,7 +103,10 @@ export class SousChefVoice {
 
   availableVoices(): SpeechSynthesisVoice[] {
     return this.synthSupported
-      ? window.speechSynthesis.getVoices().filter((v) => v.lang.startsWith('en'))
+      ? window.speechSynthesis
+          .getVoices()
+          .filter((v) => v.lang.startsWith('en') && !SousChefVoice.NOVELTY.test(v.name))
+          .sort((a, b) => this.voiceScore(b) - this.voiceScore(a))
       : []
   }
 
@@ -80,13 +117,22 @@ export class SousChefVoice {
       if (interrupt) window.speechSynthesis.cancel()
       const u = new SpeechSynthesisUtterance(text)
       if (this.voice) u.voice = this.voice
-      u.rate = 0.95
-      u.pitch = 1
+      // Near-natural pace with a hair of warmth; a dragging rate reads as robotic.
+      u.rate = 0.98
+      u.pitch = 1.03
+      this.currentUtterance = u
       this.speaking = true
       this.stopRecognitionInternal()
       const finish = () => {
-        this.speaking = false
-        if (this.shouldListen) this.startRecognitionInternal()
+        // A newer utterance (from an interrupt) already owns the mic — the
+        // cancelled utterance's late onend must NOT flip `speaking` back or
+        // restart recognition mid-narration (that made the assistant hear
+        // itself). Only the current utterance resumes listening.
+        if (this.currentUtterance === u) {
+          this.currentUtterance = null
+          this.speaking = false
+          if (this.shouldListen && !this.disposed) this.startRecognitionInternal()
+        }
         resolve()
       }
       u.onend = finish
@@ -97,6 +143,7 @@ export class SousChefVoice {
 
   stopSpeaking() {
     if (this.synthSupported) window.speechSynthesis.cancel()
+    this.currentUtterance = null
     this.speaking = false
   }
 
@@ -110,6 +157,8 @@ export class SousChefVoice {
   stopListening() {
     this.shouldListen = false
     this.stopRecognitionInternal()
+    this.stopLevelMeter()
+    this.events.onLevel(0)
     this.events.onListeningChange(false)
   }
 
@@ -154,7 +203,17 @@ export class SousChefVoice {
     try {
       rec.start()
     } catch {
+      // Chrome throws InvalidStateError when start() races the teardown of a
+      // just-ended session. Drop this instance and retry, otherwise the mic
+      // dies silently while shouldListen stays true.
       this.recognition = null
+      if (this.shouldListen && !this.speaking && !this.disposed) {
+        setTimeout(() => {
+          if (this.shouldListen && !this.speaking && !this.disposed) {
+            this.startRecognitionInternal()
+          }
+        }, 300)
+      }
     }
   }
 
@@ -205,15 +264,21 @@ export class SousChefVoice {
     }
   }
 
+  private stopLevelMeter() {
+    cancelAnimationFrame(this.levelRaf)
+    this.levelRaf = 0
+    this.mediaStream?.getTracks().forEach((t) => t.stop())
+    this.mediaStream = null
+    this.audioCtx?.close().catch(() => {})
+    this.audioCtx = null
+    this.analyser = null
+  }
+
   dispose() {
     this.disposed = true
     this.shouldListen = false
     this.stopRecognitionInternal()
     this.stopSpeaking()
-    cancelAnimationFrame(this.levelRaf)
-    this.mediaStream?.getTracks().forEach((t) => t.stop())
-    this.audioCtx?.close().catch(() => {})
-    this.audioCtx = null
-    this.analyser = null
+    this.stopLevelMeter()
   }
 }
