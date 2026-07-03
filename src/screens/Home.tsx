@@ -66,9 +66,11 @@ export function Home() {
         </div>
 
         <SectionHeader title="Cook with what you have" onSeeAll={() => openSearch()} />
-        {/* shrink-0: this row must keep its full height — the parent column is
-            scrollable, so it should scroll rather than compress the cards */}
-        <div className="no-scrollbar -mx-5 -my-2 flex shrink-0 gap-[14px] overflow-x-auto px-5 py-2">
+        {/* shrink-0: keep full height (parent column scrolls instead of
+            compressing the cards). py-6/-my-6: give the card shadow (~24px
+            below) room so overflow-x-auto doesn't clip it into a hard line;
+            the equal negative margin keeps page spacing unchanged. */}
+        <div className="no-scrollbar -mx-5 -my-6 flex shrink-0 gap-[14px] overflow-x-auto px-5 py-6">
           {loading
             ? Array.from({ length: 3 }, (_, i) => (
                 <Skeleton key={i} className="h-[201px] w-[210px] shrink-0 rounded-[18px]" />
