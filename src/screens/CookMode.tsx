@@ -44,7 +44,12 @@ export function CookMode() {
             type="button"
             onClick={() => {
               controls.exit()
-              navigate(`/recipe/${recipe.id}`)
+              // If we arrived here from the recipe detail (normal flow), go back
+              // to that same history entry instead of pushing a new one — otherwise
+              // the detail's back button would return to Cook Mode. Fall back to a
+              // push for deep-links that open Cook Mode with no history behind them.
+              if (window.history.state?.idx > 0) navigate(-1)
+              else navigate(`/recipe/${recipe.id}`, { replace: true })
             }}
             aria-label="Exit Cook Mode"
             className="flex size-10 items-center justify-center rounded-full bg-ink-0 shadow-topbtn"
