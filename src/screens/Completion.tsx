@@ -44,7 +44,6 @@ export function Completion() {
   const toggleSaved = useSavedStore((s) => s.toggleSaved)
   const isSaved = useSavedStore((s) => s.savedIds.includes(id))
   const [rating, setRating] = useState(0)
-  const [saved, setSaved] = useState(false)
 
   useEffect(() => {
     if (!recipe) navigate('/', { replace: true })
@@ -135,11 +134,8 @@ export function Completion() {
 
       <div className="flex w-full shrink-0 flex-col gap-[10px] px-5 pb-4">
         <Button
-          onClick={() => {
-            setSaved(true)
-            done(true)
-          }}
-          icon={<BookmarkSimple size={18} weight={saved ? 'fill' : 'regular'} />}
+          onClick={() => done(true)}
+          icon={<BookmarkSimple size={18} />}
           className="w-full"
         >
           Save to Cookbook

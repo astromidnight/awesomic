@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { defaultPantry } from '../data/recipes'
@@ -35,8 +36,8 @@ export const usePantryStore = create<PantryState>()(
   ),
 )
 
-/** Reactive pantry as a Set — memo-friendly selector. */
+/** Reactive pantry as a Set — stable reference while `items` is unchanged. */
 export const usePantrySet = (): Set<string> => {
   const items = usePantryStore((s) => s.items)
-  return new Set(items)
+  return useMemo(() => new Set(items), [items])
 }

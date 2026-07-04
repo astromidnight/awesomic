@@ -31,7 +31,6 @@ export function useStepText(): string {
  * recognition, no-confirm substitution, and the step timer.
  */
 export function useCookSession(recipe: Recipe | undefined, onComplete: () => void) {
-  const store = useCookSessionStore()
   const [mic, setMic] = useState<MicState>({ supported: true, listening: false, level: 0 })
   const voiceRef = useRef<SousChefVoice | null>(null)
   const pendingSkipRef = useRef<string | null>(null)
@@ -237,5 +236,5 @@ export function useCookSession(recipe: Recipe | undefined, onComplete: () => voi
     },
   }
 
-  return { store, mic, controls }
+  return { mic, controls }
 }
