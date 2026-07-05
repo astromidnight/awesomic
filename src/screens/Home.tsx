@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { User } from '@phosphor-icons/react'
 import { Page } from './Page'
 import { StatusBar } from '../components/StatusBar'
 import { SearchBar } from '../components/SearchBar'
@@ -49,7 +50,15 @@ export function Home() {
             </p>
             <h1 className="text-[22px] font-bold text-ink-900">{greeting()}, Alex</h1>
           </div>
-          <img src={avatar} alt="Alex's profile" className="size-[46px] rounded-full" />
+          <div className="relative size-[46px] shrink-0">
+            <img src={avatar} alt="Alex's profile" className="size-full rounded-full" />
+            <User
+              size={24}
+              weight="regular"
+              className="absolute inset-0 m-auto text-ink-0"
+              aria-hidden
+            />
+          </div>
         </header>
 
         <SearchBar onClick={() => openSearch()} />

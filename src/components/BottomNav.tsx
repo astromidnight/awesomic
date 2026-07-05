@@ -21,10 +21,10 @@ function NavItem({ icon: IconCmp, label, active, onClick }: NavItemProps) {
       <IconCmp
         size={24}
         weight={active ? 'fill' : 'regular'}
-        className={active ? 'text-emerald-500' : 'text-ink-600'}
+        className={active ? 'text-emerald-700' : 'text-ink-600'}
       />
       <span
-        className={`text-[10.5px] ${active ? 'font-semibold text-emerald-500' : 'font-medium text-ink-600'}`}
+        className={`text-[10.5px] ${active ? 'font-semibold text-emerald-700' : 'font-medium text-ink-600'}`}
       >
         {label}
       </span>

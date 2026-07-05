@@ -124,7 +124,7 @@ export function SearchResults() {
             <button
               type="button"
               onClick={filters.reset}
-              className="mt-1 rounded-full bg-emerald-500 px-5 py-[9px] text-[13px] font-semibold text-ink-0"
+              className="mt-1 rounded-full bg-emerald-700 px-5 py-[9px] text-[13px] font-semibold text-ink-0"
             >
               Clear filters
             </button>
@@ -151,7 +151,7 @@ export function SearchResults() {
           <SlidersHorizontal size={18} className="text-ink-0" />
           <span className="text-[14px] font-semibold text-ink-0">Filters</span>
           {pills.length > 0 && (
-            <span className="flex size-5 items-center justify-center rounded-full bg-emerald-500 text-[11px] font-bold text-ink-0">
+            <span className="flex size-5 items-center justify-center rounded-full bg-emerald-700 text-[11px] font-bold text-ink-0">
               {pills.length}
             </span>
           )}
