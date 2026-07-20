@@ -11,7 +11,7 @@ export function SectionHeader({ title, onSeeAll }: SectionHeaderProps) {
         <button
           type="button"
           onClick={onSeeAll}
-          className="relative text-[13px] font-semibold text-emerald-700 after:absolute after:-inset-2 after:content-['']"
+          className="relative text-[13px] font-semibold text-emerald-500 after:absolute after:-inset-2 after:content-['']"
         >
           See all
         </button>

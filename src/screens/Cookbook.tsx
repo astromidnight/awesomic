@@ -39,7 +39,7 @@ export function Cookbook() {
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="mt-1 rounded-full bg-emerald-700 px-5 py-[9px] text-[13px] font-semibold text-ink-0"
+              className="mt-1 rounded-full bg-emerald-500 px-5 py-[9px] text-[13px] font-semibold text-ink-0"
             >
               Browse recipes
             </button>

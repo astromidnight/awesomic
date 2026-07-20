@@ -73,7 +73,7 @@ export function Pantry() {
                 aria-pressed={on}
                 onClick={() => toggle(id)}
                 className={`rounded-full px-[14px] py-[9px] text-[13px] font-medium transition-colors ${
-                  on ? 'bg-emerald-700 text-ink-0' : 'border border-ink-200 bg-ink-0 text-ink-900'
+                  on ? 'bg-emerald-500 text-ink-0' : 'border border-ink-200 bg-ink-0 text-ink-900'
                 }`}
               >
                 {id}

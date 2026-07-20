@@ -3,7 +3,7 @@ import type { ReactNode, ButtonHTMLAttributes } from 'react'
 type Variant = 'primary' | 'ink' | 'outline'
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-emerald-700 text-ink-0 active:bg-emerald-800',
+  primary: 'bg-emerald-500 text-ink-0 active:bg-emerald-600',
   ink: 'bg-ink-900 text-ink-0 active:opacity-90',
   outline: 'bg-ink-0 text-ink-900 border-[1.5px] border-ink-200 active:bg-ink-50',
 }

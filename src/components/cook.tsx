@@ -83,8 +83,8 @@ export function VoiceSwapCard({ swap, summary, onUndo, onKeep }: VoiceSwapCardPr
     >
       <div className="flex w-full items-center justify-between">
         <span className="flex items-center gap-[6px]">
-          <Microphone size={15} weight="fill" className="text-emerald-700" />
-          <span className="text-[11px] font-bold tracking-[0.04em] text-emerald-700">
+          <Microphone size={15} weight="fill" className="text-emerald-500" />
+          <span className="text-[11px] font-bold tracking-[0.04em] text-emerald-500">
             VOICE SWAP
           </span>
         </span>
@@ -107,7 +107,7 @@ export function VoiceSwapCard({ swap, summary, onUndo, onKeep }: VoiceSwapCardPr
         <button
           type="button"
           onClick={onKeep}
-          className="flex min-h-9 items-center gap-[5px] rounded-full bg-emerald-700 py-[7px] pr-[14px] pl-3"
+          className="flex min-h-9 items-center gap-[5px] rounded-full bg-emerald-500 py-[7px] pr-[14px] pl-3"
         >
           <Check size={14} className="text-ink-0" />
           <span className="text-[12px] font-semibold text-ink-0">Keep swap</span>
